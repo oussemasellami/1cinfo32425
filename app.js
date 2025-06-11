@@ -1,35 +1,34 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var http=require('http')
+const http = require("http");
+const express = require("express");
+//connectio to db
+const mongo = require("mongoose");
+const mongoconnect = require("./config/dbconnection.json");
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var productRouter = require('./routes/product');
-var osRouter = require('./routes/os');
+mongo
+  .connect(mongoconnect.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("database connect");
+  })
+  .catch((err) => {
+    err;
+  });
 
-var app = express();
+//
+const testRouter = require("./routes/test");
+const usersRouter = require("./routes/users");
+const coursRouter = require("./routes/cours");
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'twig');
+const app = express();
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json())
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/product', productRouter);
-app.use('/os', osRouter);
+app.use("/test", testRouter);
+app.use("/users", usersRouter);
+app.use("/cours", coursRouter);
 
+const server = http.createServer(app, console.log("server is running"));
 
-const server=http.createServer(app,
-  console.log('server is running')
-)
-server.listen(3000)
-module.exports = app;
+server.listen(3000);
