@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const UserController = require("../controller/userController");
 
+const ValidateMiddl=require('../middl/validate')
+
 router.get("/show", (req, res) => {
   res.send("hello test");
 });
@@ -15,7 +17,7 @@ router.get("/show", (req, res) => {
   res.send("good added");
 });*/
 
-router.post("/add", UserController.add);
+router.post("/add",ValidateMiddl.validate ,UserController.add);
 
 router.get("/showusers", UserController.showuser);
 
@@ -28,5 +30,9 @@ router.get("/showbyusernames/:username", UserController.showusernames);
 router.delete("/deleteuser/:id", UserController.deleteUser);
 
 router.put("/updateuser/:id", UserController.updateuser);
+
+router.get("/msg",(req,res)=>{
+  res.render("message")
+})
 
 module.exports = router;
